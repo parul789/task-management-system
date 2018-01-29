@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+{% load static %}
+<html ng-app="project">
+	<head>
+		<title>Task Management System</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/project.css' %}">
+		<script src="{% static 'js/angular.min.js' %}"></script>
+		<script src="{% static 'js/ng-route-angular.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/projectview.js' %}" ></script>
+		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	</head>
+	{% block bodycontent %}
+	<body  ng-controller="projectcreateController" ng-init="listProjects()">
+	{% endblock bodycontent %}
+	{% block nav %}
+		<nav class="navbar navbar-inverse">
+		    <div class="container-fluid">
+		    	<div class="navbar-header">
+				    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+				     	<span class="icon-bar"></span>
+				        <span class="icon-bar"></span>
+				        <span class="icon-bar"></span> 
+			        </button>
+                </div>
+		    	<div class="collapse navbar-collapse" id="myNavbar">
+			    	<ul class="nav navbar-nav navbar-left">
+		        		<li>
+		        			<a href="#" ng-click="back()">
+		        				<i class="fa fa-chevron-left" aria-hidden="true">
+		        				</i>Back: [[projecttl]]
+	        				</a>
+        				</li>
+                    </ul>
+		      		<ul class="nav navbar-nav navbar-right">
+                        <li>
+                        	<a href="#" ng-click="signout()"><strong>Welcome </strong>[[welcmsg]]|
+	                        	<span class="glyphicon glyphicon-log-out">
+	                        	</span>Logout
+                        	</a>
+                    	</li>
+		      		</ul>
+		    	</div>
+		 	</div>
+		</nav> 
+		{% endblock nav %}
+		{% block search %}
+		<li id="searchbox">
+			<form method="GET" action="" class="row">
+	        <div class="clearfix"></div>
+	            <div id="search" class=" col-sm-4 input-group">
+	                <input class="form-control " type="text" ng-change="listProjects()" name="q" ng-model="q" placeholder="Search here ...."/>
+	                <span class="input-group-btn">
+	                    <button disabled  class="btn btn-info" type="submit" ng-click="listProjects()" value="Search">
+	                    <i class="fa fa-search" aria-hidden="true"></i>
+	                    </button>
+	                </span>
+	            </div>
+	         <div class="clearfix"></div>   
+	        </form>
+        </li>
+        {% endblock search %}
+		<!-- add projects -->
+		{% block content %}
+		<div>
+	        <div id="card" class="card col-sm-3">
+				<button type="button" class="btn btn-success" data-target="#projectModal" data-toggle="modal" ><span class="glyphicon glyphicon-plus-sign" ></span>Add a new Project</button>
+				<button type="button" class="more btn btn-primary" data-target="#stageModal"  data-toggle="modal"><span class="glyphicon glyphicon-option-horizontal"></span>Add new Stage</button>
+			</div>	
+            <!-- stage modal -->
+			<div class="modal fade" id="stageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-right modal-sm" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="">Add new Stage</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body">
+			             	<div class="md-form form-sm">
+							    <i class="fa fa-envelope prefix"></i>
+							    <label for="form1">Entry<i>(enter name of stage)</i></label>
+							    <input type="text" id="form1" ng-model="data.entry" class="form-control">
+					    	</div>
+			            </div>
+			            <div class="modal-footer">
+			                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			                <button type="button" ng-click="stageCreate()" class="btn btn-primary">Save</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+			<!-- create project modal -->
+			<div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-lg" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="">Create a new Project</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body" ui-view="project-create">
+			                <div class="md-form form-sm">
+							    <i class="fa fa-envelope prefix"></i> <label for="form32">Title(<i>not more than 10 characters</i>)</label>
+							    <input type="text" id="form1" class="form-control" ng-model="data.title" name="project_title">
+							</div>
+							<div class="md-form form-sm"> <label for="form3">Start Date</label>
+							    <i class="fa fa-calendar" aria-hidden="true"></i>
+							    <input type="date" ng-model="data.start_date" [[ start_date | date : 'yyyy/mm/dd':UTC]] id="form4" class="form-control"  name="start_date">
+							</div>
+							<div class="md-form form-sm"> <label for="form3">End Date</label>
+							    <i class="fa fa-calendar" aria-hidden="true"></i>
+							    <input type="date" ng-model="data.end_date" [[ end_date | date : 'dd/mm/yyyy' : "UTC" ]] id="form4" class="form-control"  name="end_date">
+							</div>
+							
+							<div class="form-group">
+						        <div class="col-sm-3 col-md-3" ng-click="bringStage()">
+							        <label for="stage" class="control-label">Stage</label>
+							        <select class="form-control" id="stage" ng-model="data.stage">
+							          <option ng-value="i.id" ng-repeat="i in stage" >[[i.entry]]</option>
+							        </select>          
+						        </div>
+							</div> 
+						<div class="modal-footer">
+						    <button id="b1" type="button" class="btn btn-secondary" ng-click="click()" data-dismiss="modal">Close</button>
+			                <button type="button" class="btn btn-primary" ng-click="projectCreate()">Create</button>
+			            </div>
+	                    </div>
+			        </div>
+			    </div>
+			</div>
+        <!-- dynamic card to create new project -->	
+		<div id="createcard1" class="card col-sm-3" ng-repeat="project in projects" >
+			 <div class="card-block" >
+			 	<table>
+			 		<thead>
+			 			<tr>
+			 				<th class=""><h1 style="color:white" class="card-title" ng-click="redirectToNext(project.id)" >[[project.title]]</h1>
+			 				</th>
+			 			</tr>
+			 		</thead>
+			 	</table>
+			 </div>
+		     <div class="card-block">
+			    <button id="btn-delete" ng-click="pass(project.id)" class="btn btn-danger" data-target="#deleteModal" data-toggle="modal">Delete</button>
+			    <button id="btn-update" ng-click="projectDetail(project.id)" class="btn btn-warning" data-target="#updateModal" data-toggle="modal">Update</button>
+			    <button id="btn-detail" ng-click="redirectToNext(project.id,project.title)" class="btn btn-info" >Details</button>
+	  		</div>
+        <!-- delete modal -->	
+			<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-right modal-sm" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="">Are you surely want to delete it?</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-footer">
+			                <button type="button" id="project.id" ng-click="projectDelete(passid)" class="btn btn-danger">Delete</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+		<!--update modal -->
+			<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-right modal-lg" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title">Add new Stage</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="form-group">
+					        <div class="col-sm-2" ng-click="bringStage()">
+						        <label for="s1">Current_Stage:</label>
+						        <input type="text" class="form-control" id="s1" ng-model="data.stage" readonly>
+						        <label for="stage" class="col-sm-3 control-label">New_Stage:</label>
+						        <select class="form-control" id="stage" ng-model="data.stage">
+						          <option ng-value="i.id" ng-repeat="i in stage" >[[i.entry]]</option>
+						        </select>          
+					        </div>
+						</div>
+			          	<div class="modal-footer">
+			                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			                <button type="button" class="btn btn-primary" ng-click="projectUpdate([[project.id]])">Save</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+		</div>
+		{% endblock content %}
+    </body>
+</html>

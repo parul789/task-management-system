@@ -1,0 +1,26 @@
+{% extends 'project.html' %}
+{% block content %}
+    <body ng-controller="projectcreateController">
+    {% block nav %}
+    {% endblock nav %}
+    {% block search %}
+    {% endblock search %}
+        <header>
+            <h2>TASK MANAGEMENT SYSTEM USER LOGIN</h2>
+        </header><hr>
+        <form method="POST">
+            <div class="container">
+                <div class=" form-group col-sm-6">
+                    <label><b>Email</b></label>
+                    <input type="email" ng-model="userdata.email" class="form-control" placeholder="Enter Email" name="email" required>
+                </div>
+                <div class="clearfix"></div>
+                <div class=" form-group col-sm-6">
+                    <label><b>Password</b></label>
+                    <input type="password" ng-model="userdata.password" class="form-control" placeholder="Enter Password" name="psw" required>
+                </div>
+                <div class="clearfix"></div>
+                <button type="submit" ng-click="signin()" id="btn1" class="btn btn-success">Login</button>
+            </div>
+        </form>
+{% endblock content%}   

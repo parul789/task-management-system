@@ -1,0 +1,27 @@
+body{
+	background-color: #61233D;
+	height:800px;
+}
+.sidenav{
+	position:relative;
+	left: 1%;
+	background-color: #312D2D;
+	height:700px;
+
+}
+.sidenav ul li a {
+	color: #D0D0D0;
+}
+.sidenav h4{
+	color: #D0D0D0;
+	text-align: center;
+}
+.sidenav ul li{
+	margin: 15px;
+}
+.project-create{
+	display: inline;
+}
+.form-control{
+	color: black;
+}

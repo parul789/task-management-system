@@ -1,0 +1,93 @@
+/* project page css */
+
+#search{
+	position: relative;
+	left: 3%;
+}
+.card{
+	height:200px;
+	position:relative;
+	border:5px solid white;
+	padding: 20px solid white ;
+	margin:30px solid white;
+	background-color: grey
+}
+#createcard1{
+	position:relative;
+	height:200px;
+	background-color:#900C3F;
+    border:5px solid white;
+	padding: 20px solid white;
+	margin:30px solid white;
+}
+#createcard1:hover{
+	background-color: #2471A3 ;
+}
+
+/* login page css */
+
+.container{
+          position: relative;
+          top: 200px;
+          left:20%;
+        }
+header h2{
+          position: relative ;
+          left:35%;
+        }
+#btn1{
+          position: relative;
+          left:2%;
+        }
+
+/* process page css */
+
+#createcard{
+	position:relative;
+	height:200px;
+	background-color:#17A589;
+    border:5px solid white;
+	padding: 20px solid white ;
+	margin:30px solid white;
+}
+#createcard:hover{
+	background-color: #922B21;
+}
+ul li{
+	list-style-type: none;
+}
+ul li a{
+	text-decoration: none;
+	text-align: left;
+}
+.btn-group{
+	width: 100%;
+	
+	top: 50px;
+}
+.glyphicon-trash{
+	color:red;
+}
+.glyphicon-edit{
+	color:blue;
+}
+.glyphicon-bell{
+	color:orange;
+}
+i{
+	font-weight:50;
+}
+#tasklist{
+ 	display: flex; 
+ 	background-color: #FFFAFA;
+ 	opacity: 1;
+}
+#taskdiv{
+	background-color: #FFFAFA;
+}
+#searchbox{
+	list-style-type:none;
+}
+
+
+

@@ -1,0 +1,289 @@
+	{% extends 'project.html' %}
+	{% block bodycontent %}
+	<body ng-controller="projectcreateController" ng-init="processList()">
+	{% endblock bodycontent %}	
+		<!-- add process -->
+	{% block content %}
+        <div>
+        	<div id="card" class="card col-sm-3">
+				<button type="button" class="btn btn-success" data-target="#processModal" data-toggle="modal" ng-click="listProjects()" ><span class="glyphicon glyphicon-plus-sign" ></span>Add a new Process</button>
+			</div>
+			<div class="modal fade" id="processModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-sm " role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="exampleModalLabel">Create a new Process</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body">
+			                <div class="md-form form-sm">
+							    <input type="hidden" name="project" ng-model="processdata.project"  class="form-control" readonly>
+							</div>
+			                <div class="md-form form-sm">
+							    <i class="fa fa-envelope prefix"></i> <label for="form32">Title</label>
+							    <input type="text" id="form1" name="title" ng-model="processdata.title" class="form-control">
+							</div>
+							<div class="md-form form-sm">
+							    <label for="form32">Priority<i>(a number between 1 to 10,1 being the highest )</i></label>
+							    <input type="text" id="form2" name="priority" ng-model="processdata.priority" class="form-control">
+							</div>
+							<div class="modal-footer">
+							    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				                <button type="button" class="btn btn-primary" ng-click="processCreate()">Create</button>
+				            </div>
+	                    </div>
+			        </div>
+			    </div>
+			</div>
+     	</div>
+		<!-- dynamic card to create new process -->	
+		<div id="createcard" class="card col-sm-3" ng-repeat="process in pj_obj.processes|filter:query">
+			 <div class="card-block" >
+			 	<table>
+			 		<thead>
+			 			<tr>
+			 				<th class=""><h1 style="color:white" class="card-title" >[[process.title]]</h1>
+			 				</th>
+			 			</tr>
+			 		</thead>
+			 	</table>
+			 </div>
+		     <div class="card-block">
+			    <button id="btn-delete" title="delete" class="btn btn-danger" data-target="#deleteModal" data-toggle="modal">Delete</button>
+			    <button id="btn-update" class="btn btn-warning" ng-click="processDetail(process.id)" title="update" data-target="#updateModal" data-toggle="modal">Update</button>
+	  		</div>
+			<!-- process delete -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-right modal-sm" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="exampleModalLabel">Are you surely want to delete it?</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-footer">
+			                <button type="button" id="project.id" ng-click="processDelete([[process.id]])" class="btn btn-danger">Delete</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>	
+			<!-- process update -->
+			<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-right modal-sm" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="">Edit this Process</h5>
+			                <button type="button" ng-click="UserList()" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body">
+			                <div class="md-form form-sm">
+							    <i class="fa fa-envelope prefix"></i> <label for="form32">Title</label>
+							    <input type="text" class="form-control" ng-model="processdata.title" name="project_title">
+							</div>
+							<div class="md-form form-sm">
+							    <i class="fa fa-square" aria-hidden="true"></i> <label for="form32">Priority<i>(a number between 1 to 10)</i></label>
+							    <input type="text"  class="form-control" ng-model="processdata.priority" >
+							</div>
+							<div class="md-form form-sm">
+							    <input type="hidden" class="form-control" ng-model="processdata.project"  readonly>
+							</div>
+						</div>
+			          	<div class="modal-footer">
+			                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			                <button type="button" class="btn btn-primary" ng-click="processUpdate(process.id)">Save Changes</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>	
+			<!-- Tasks -->
+	  		<div class="btn-group" ng-click="passprocessId(process.id)">
+				<button type="button" class="btn col-sm-6 btn-sm btn-danger btn-secondary">Tasks</button>
+				<button type="button" ng-click="getprocessID()" data-target="#taskcreateModal" data-toggle="modal" class="btn col-sm-3 btn-success btn-sm aria-haspopup="true" ><span class="glyphicon glyphicon-plus-sign" ></span>
+				</button>
+				<button type="button" class="btn col-sm-3 btn-info btn-sm dropdown-toggle btn-secondary dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true">TaskList <span class="glyphicon glyphicon-triangle-bottom"></span>
+				</button>
+				    <div class="dropdown-menu table" id="taskdiv"> 
+			  	        <div id="tasklist" class="row d-inline-flex p-2" ng-click="pass(task.id)" ng-repeat="task in process.tasks" >
+					  	    <div class="col-sm-3 col-md-3 d-flex justify-content-around">
+	                        	<a href="#" ng-click="taskDetail(task.id)" data-target="#usersModal" data-toggle="modal"><i class="fa fa-users" aria-hidden="true"></i></a><hr>
+                        	</div>
+				    		<div class="col-sm-3 col-md-3 d-flex justify-content-around">
+				    			<a data-target="#sendsignalModal" href="#" data-toggle="modal" title="Alert!"><span class="glyphicon glyphicon-bell"></span></a><hr>
+			    			</div>
+				    		<div class="col-sm-3 col-md-3 d-flex justify-content-around">
+				    			<a href="#" ng-click="taskDetail(task.id)" data-target="#taskupdateModal" data-toggle="modal" title="Edit"><span class="glyphicon glyphicon-edit"></span></a><hr>
+			    			</div>
+	                        <div class="col-sm-3 col-md-3 d-flex justify-content-around">
+	                        	<a data-target="#taskdeleteModal" href="#" data-toggle="modal" title="Delete"><span class="glyphicon glyphicon-trash"></span></a><hr>
+                        	</div>
+                        	<div  class="col-sm-3 col-md-3 d-flex justify-content-around">
+				    			<a ng-click="pass(task.id)" class="dropdown-item " href="#">[[task.order]]:[[task.title]]</a><hr>
+			    			</div>
+                        </div>
+				    </div> 
+			</div>	 
+	   		<!-- task delete -->
+            <div class="modal fade" id="taskdeleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+	            <div class="modal-dialog modal-right modal-sm" role="document">
+	                <div class="modal-content">
+	                    <div class="modal-header">
+			                <h5 class="modal-title" id="">Are you surely want to delete it?</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+	                    </div>
+	                <div class="modal-footer">
+	                <button type="button" ng-click="taskDelete(passid)" class="btn btn-danger">Delete</button>
+	                </div>
+	                </div>
+	            </div>
+	        </div>	
+			<!-- task update -->
+            <div class="modal fade" id="taskupdateModal" tabindex="-1" role="dialog" aria-labelledby="updateLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-right modal-lg" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="">Edit this Process</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body">
+				            <form>
+				                <div class="form-group">
+								    <label for="taskstatus">Task Status</label>
+								    <!--<input type="text" class="form-control" ng-model="taskdata.status"  name="status" list="taskstatus"> -->
+									<select class="form-control" id="taskstatus" ng-model="taskdata.status">
+									  <option value="Pending">Pending</option>
+								      <option value="Finished">Finished</option>
+								      <option value="Debugging">Debugging</option>
+								      <option value="Finished After Debugging">Finished After Debugging</option>
+                                    </select>
+								</div>
+							</form>
+				          	<div class="modal-footer">
+				                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				                <button type="button" class="btn btn-primary" ng-click="taskUpdate(passid)">Save Changes</button>
+				            </div>
+			            </div>
+			    	</div>
+	        	</div>
+	        </div>	
+			<!-- end of task update -->
+			<!-- send signal (ALARM)-->
+            <div class="modal fade" id="sendsignalModal" tabindex="-1" role="dialog" aria-labelledby="updateLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-right modal-sm" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title" id="">Send Debug Signal</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body">
+			            	<div class="md-form form-sm">
+							    <i class="fa fa-square" aria-hidden="true"></i> <label for="form32">Order</label>
+							    <input type="number" id="form1" class="form-control" max="[[data.order]]" ng-model="order" name="task_order">
+					        </div>
+					    </div>
+			          	<div class="modal-footer">
+			                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			                <button type="button" class="btn btn-primary" ng-click="sendsignal(order)">Send</button>
+			            </div>
+			        </div>
+			    </div>
+	        </div>	
+			<!-- end -- >
+			<!--task create Modal -->
+            <div class="modal fade" id="taskcreateModal" tabindex="-1" role="dialog" aria-labelledby="updateLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-right modal-lg" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <h5 class="modal-title">Create this Task</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body">    
+			                <form method='POST'>
+			                    <div class="col-sm-12 col-md-12" ng-click="UserList()"><i class="fa fa-square" aria-hidden="true"></i> <label for="form1">User(<i>Use ctrl to select multiple users</i>)</label>
+						        <select multiple class="form-control" id="pk" ng-model="taskdata.user_assignedto">
+						          <option ng-value="user.id" ng-repeat="user in users" >[[user.username]]</option>
+						        </select>          
+						        </div>
+				            </form> 
+			                <div class="md-form form-sm">
+							    <input type="hidden" id="form1" ng-model="taskdata.process" class="form-control" name="task_process" readonly>
+					        </div>
+			                <div class="md-form form-sm">
+							    <i class="fa fa-square" aria-hidden="true"></i> <label for="form2">Title</label>
+							    <input type="text" id="form2" class="form-control" ng-model="taskdata.title" name="task_title">
+					        </div>
+					        <div class="md-form form-sm">
+							    <i class="fa fa-square" aria-hidden="true"></i> <label for="form3">Order</label>
+							    <input type="number" ng-model="taskdata.order" id="form3" class="form-control" name="task_order">
+					        </div>
+					        <div class="md-form form-sm">
+							    <i class="fa fa-square" aria-hidden="true"></i> <label for="form4">End Date</label>
+							    <input type="date" ng-model="taskdata.end_date" [[ end_date | date : 'dd/mm/yyyy' : "UTC" ]] id="form4" class="form-control" name="task_enddate">
+					        </div>
+					        <div class="md-form form-sm">
+							    <i class="fa fa-square" aria-hidden="true"></i> <label for="form5">Order<i>(a number between 1 to 1000)</i></label>
+							    <input type="file"  id="form5" class="form-control" name="task_image">
+					        </div>
+					        <form>
+				                <div class="form-group"><i class="fa fa-square" aria-hidden="true"></i>
+								    <label for="taskstatus">Task Status</label>
+								    <!--<input type="text" class="form-control" ng-model="taskdata.status"  name="status" list="taskstatus"> -->
+									<select id="taskstatus" class="form-control" ng-model="taskdata.status" >
+									  <option value="Pending">Pending</option>
+								      <option value="Finished">Finished</option>
+								      <option value="Debugging">Debugging</option>
+								      <option value="Finished After Debugging">Finished After Debugging</option>
+                                    </select>
+								</div>
+							</form>
+						</div>	
+			          	<div class="modal-footer">
+			                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			                <button type="button" class="btn btn-primary" ng-click="taskCreate()">Save Changes</button>
+			            </div>
+			        </div>
+			    </div>
+	        </div> 
+			<!-- end -->
+			<!-- users modal -->
+			 <div class="modal fade" id="usersModal" tabindex="-1" role="dialog" aria-labelledby="updateLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-right modal-sm" role="document">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body">
+			            	<strong><h5 class="modal-title" id=""><u>Task creation is done by:</u></h5></strong>
+			            	<ul>
+				            	<li >[[creator]]</li>
+			                </ul><hr>
+			                <h5 class="modal-title" id=""><u>Users assigned to this Task:</u></h5>
+				            <ul>
+				            	<li ng-repeat="user in usernames" >[[user.username]]</li>
+			                </ul>
+				          	<div class="modal-footer">
+				                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				            </div>
+			            </div>
+			    	</div>
+	        	</div>
+	        </div>	
+			<!-- end -->
+       </div>
+{% endblock content %}
+   
